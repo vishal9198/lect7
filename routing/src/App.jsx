@@ -1,13 +1,13 @@
-import { lazy, useMemo, useState } from "react";
+import { lazy, useEffect, useMemo, useState } from "react";
 
-import { notificationAtom, totalCountSelector } from "./store/atoms/atom";
+import { todosFamily } from "./store/atoms/atom";
 
 import "./App.css";
 import {
   RecoilRoot,
-  useSetRecoilState,
-  useRecoilValue,
   useRecoilState,
+  useRecoilValue,
+  useSetRecoilState,
 } from "recoil";
 
 function App() {
@@ -21,19 +21,35 @@ function App() {
 }
 
 function Mainapp() {
-  const [networkCount, setnetworkCount] = useRecoilState(notificationAtom);
-  const totalNotification = useRecoilValue(totalCountSelector);
+  const udateTodo = useSetRecoilState(todosFamily(2));
+  useEffect(() => {
+    setTimeout(() => {
+      udateTodo({
+        id: "2",
+        title: "run",
+        description: "run at 4",
+      });
+    }, 5000);
+  }, []);
+
   return (
     <div>
-      <button>Home</button>
-      <button>
-        My network(
-        {networkCount.networks >= 100 ? "99+" : networkCount.networks})
-      </button>
-      <button>Job({networkCount.jobs})</button>
-      <button>Meassage({networkCount.messaging})</button>
-      <button>Notification({networkCount.notifications})</button>
-      <button>Me({totalNotification})</button>
+      <Todo id={1} />
+      <Todo id={2} />
+      <Todo id={1} />
+      <Todo id={2} />
+      <Todo id={1} />
+    </div>
+  );
+}
+
+function Todo({ id }) {
+  const [currentTodo, setCurrentTodo] = useRecoilState(todosFamily(id));
+  console.log(`todo with id ${id} re-render`);
+  return (
+    <div>
+      {currentTodo.title}
+      {currentTodo.description}
     </div>
   );
 }
