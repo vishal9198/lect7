@@ -1,52 +1,60 @@
-import { lazy, Suspense, useContext, useState } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { lazy, useMemo, useState } from "react";
+import { countAtom, evenSelector } from "./store/atoms/count";
+
 import "./App.css";
-const Dashboard = lazy(() => import("./components/Dashboard"));
-const Landing = lazy(() => import("./components/Landing"));
-import Navbar from "./components/Navbar";
-import { CountContext } from "./context";
+import { RecoilRoot, useSetRecoilState, useRecoilValue } from "recoil";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <>
-      <CountContext.Provider value={{ count, setCount }}>
+      <RecoilRoot>
         <Count />
-      </CountContext.Provider>
+      </RecoilRoot>
     </>
   );
 }
 
 function Count() {
-  const { count, setCount } = useContext(CountContext);
+  console.log("re-render");
   return (
     <div>
       <CountRender />
-      <Buttons setCount={setCount} />
+      <Buttons />
     </div>
   );
 }
 
 function CountRender() {
-  const { count } = useContext(CountContext);
-  return <div>{count}</div>;
+  const count = useRecoilValue(countAtom);
+  return (
+    <div>
+      {count}
+      <EvenCountRender />
+    </div>
+  );
+}
+
+function EvenCountRender() {
+  const isEven = useRecoilValue(evenSelector);
+
+  return <div>{isEven ? "It is Even" : null}</div>;
 }
 
 function Buttons() {
-  const { count, setCount } = useContext(CountContext);
+  const setCount = useSetRecoilState(countAtom);
+  console.log("button re-render");
   return (
     <div>
       <button
         onClick={() => {
-          setCount(count - 1);
+          setCount((count) => count - 1);
         }}
       >
         Decreases
       </button>
       <button
         onClick={() => {
-          setCount(count + 1);
+          setCount((count) => count + 1);
         }}
       >
         increases
