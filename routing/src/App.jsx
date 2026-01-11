@@ -1,14 +1,14 @@
 import { lazy, useMemo, useState } from "react";
-import {
-  jobAtom,
-  messageAtom,
-  networkAtom,
-  notificationAtom,
-  totalCountSelector,
-} from "./store/atoms/atom";
+
+import { notificationAtom, totalCountSelector } from "./store/atoms/atom";
 
 import "./App.css";
-import { RecoilRoot, useSetRecoilState, useRecoilValue } from "recoil";
+import {
+  RecoilRoot,
+  useSetRecoilState,
+  useRecoilValue,
+  useRecoilState,
+} from "recoil";
 
 function App() {
   return (
@@ -21,18 +21,18 @@ function App() {
 }
 
 function Mainapp() {
-  const networkcount = useRecoilValue(networkAtom);
-  const jobcount = useRecoilValue(jobAtom);
-  const messagecount = useRecoilValue(messageAtom);
-  const notificationcount = useRecoilValue(notificationAtom);
+  const [networkCount, setnetworkCount] = useRecoilState(notificationAtom);
   const totalNotification = useRecoilValue(totalCountSelector);
   return (
     <div>
       <button>Home</button>
-      <button>My network({networkcount >= 100 ? "99+" : networkcount})</button>
-      <button>Job({jobcount})</button>
-      <button>Meassage({messagecount})</button>
-      <button>Notification({notificationcount})</button>
+      <button>
+        My network(
+        {networkCount.networks >= 100 ? "99+" : networkCount.networks})
+      </button>
+      <button>Job({networkCount.jobs})</button>
+      <button>Meassage({networkCount.messaging})</button>
+      <button>Notification({networkCount.notifications})</button>
       <button>Me({totalNotification})</button>
     </div>
   );
